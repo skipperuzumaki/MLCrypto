@@ -17,7 +17,7 @@ class Block:
         output = (str(int(self.id)) + " block @ " + str(self.timestamp) + "\n")
         for tran in self.transactions:
             output += str(tran)
-            output += '\n"
+            output += "\n"
         output += str(self.prevhash) + "\n"
         output += str(self.msghash) + "\n"
         output += str(self.traindata) + "\n"
