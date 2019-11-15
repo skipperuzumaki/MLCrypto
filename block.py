@@ -13,6 +13,17 @@ class Block:
         self.traindata = b''
         self.improvement = b''
         self.hash = b''
+    def __str__(self):
+        output = (str(int(self.id)) + " block @ " + str(self.timestamp) + "\n")
+        for tran in self.transactions:
+            output += str(tran)
+            output += '\n"
+        output += str(self.prevhash) + "\n"
+        output += str(self.msghash) + "\n"
+        output += str(self.traindata) + "\n"
+        output += str(self.improvment) + "\n"
+        output += str(self.hash)
+        return output
     def msg_hash(self):
         digest = hashes.Hash(hashes.SHA512(),backend = default_backend())
         digest.update(self.id)
@@ -21,10 +32,7 @@ class Block:
         digest.update(self.prevhash)
         return digest.finalize()
     def secure(self,model):
-        value = []
-        for i in range(0,512,4):
-            value.append(self.msghash[i:i+4])
-        self.traindata , self.improvement = model.use(value)
+        self.traindata , self.improvement = model.use(self.msghash)
         digest = hashes.Hash(hashes.SHA512(),backend = default_backend())
         digest.update(self.msghash)
         digest.update(self.traindata)
