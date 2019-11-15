@@ -8,20 +8,25 @@ class BlockChain:
         self.swapstart = 0
         g = genesisBlock()
         self.blocks.append(g)
-    #TODO this is very rudementery change later
-    def add(self,block,model):
-        if block.validate(self.blocks[-1],model):
-            self.blocks.append(block)
-            self.swapstart += 1
-        elif self.swapstart != 0:
-            if block.validate(self.swapblocks[-1],model):
-                self.swapblocks.append(block)
-        elif self.swapstart == 0:
-            for i in range(5):
-                if block.validate(self.blocks[-1*(1+i)],model):
-                    self.swapstart = i
+    #TODO this is still quite rudementery change later
+    def add(self,block,validation):
+        if (len(self.swapblocks) + self.swapstart) - len(self.blocks) >= 3:
+            self.clearswap()
+        if len(self.blocks) >= (int(block.id)):
+            if block.validate(self.blocks[int(block.id) - 1],validation):
+                if self.blocks[-1].id == int(block.id) - 1:
+                    self.blocks.append(block)
+                else:
+                    self.clearswap()
+                    self.swapstart = int(block.id) - 1
                     self.swapblocks.append(block)
-    #TODO optimize for speed not size
+        elif (len(self.swapblocks) + self.swapstart) >=  int(block.id):
+            if block.validate(self.swapblocks[int(block.id) - 1],validation):
+                if self.swapblocks[-1].id == int(block.id) - 1:
+                    self.swapblocks.append(block)
+                else:
+                    self.clearswap()
+                    self.add(block,validation)
     def clearswap(self):
         if len(self.swapblocks) > self.swapstart:
             for i in range(len(self.swapblocks)):
